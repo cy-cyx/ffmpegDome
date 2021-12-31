@@ -1,16 +1,20 @@
 #include <jni.h>
 
-//
-// Created by JOYY on 2021/12/31.
-//
-jint getVersion(JNIEnv *env, jclass clazz) {
-    return 1;
+#include "include/IFFmpegBase.h"
+
+/**
+* Created by JOYY on 2021/12/31.
+ *
+ * 所有面对java层的接口都定义在这里
+*/
+jstring getVersion(JNIEnv *env, jclass clazz) {
+    return getAvCodecConfiguration(env);
 }
 
 int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
-            {"getVersionNative", "()I", (void *) getVersion},
+            {"getVersionNative", "()Ljava/lang/String;", (void *) getVersion},
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

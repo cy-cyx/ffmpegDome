@@ -11,5 +11,5 @@ public class FFmpegNative {
         System.loadLibrary("fmlib");
     }
 
-   public native static int getVersionNative();
+   public native static String getVersionNative();
 }
