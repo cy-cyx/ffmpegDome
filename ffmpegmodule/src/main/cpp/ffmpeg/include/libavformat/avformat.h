@@ -310,16 +310,16 @@
 #include <time.h>
 #include <stdio.h>  /* FILE */
 
-#include "libavcodec/codec.h"
-#include "libavcodec/codec_par.h"
-#include "libavcodec/defs.h"
-#include "libavcodec/packet.h"
+#include "../libavcodec/codec.h"
+#include "../libavcodec/codec_par.h"
+#include "../libavcodec/defs.h"
+#include "../libavcodec/packet.h"
 
-#include "libavutil/dict.h"
-#include "libavutil/log.h"
+#include "../libavutil/dict.h"
+#include "../libavutil/log.h"
 
 #include "avio.h"
-#include "libavformat/version.h"
+#include "../libavformat/version.h"
 
 struct AVFormatContext;
 struct AVStream;
