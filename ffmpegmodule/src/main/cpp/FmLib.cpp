@@ -7,14 +7,14 @@
  *
  * 所有面对java层的接口都定义在这里
 */
-jstring getVersion(JNIEnv *env, jclass clazz) {
+jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
     return getAvCodecConfiguration(env);
 }
 
 int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
-            {"getVersionNative", "()Ljava/lang/String;", (void *) getVersion},
+            {"getAvCodecConfigurationNative", "()Ljava/lang/String;", (void *) _getAvCodecConfiguration},
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 
