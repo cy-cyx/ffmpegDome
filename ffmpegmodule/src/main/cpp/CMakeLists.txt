@@ -48,6 +48,12 @@ set_target_properties(avformat
         PROPERTIES IMPORTED_LOCATION
         ${ffmpeg_lib_dir}/libavformat.so)
 
+#C 日志 ndk官方库
+find_library(log-lib log)
+
+set(head_dir ${CMAKE_SOURCE_DIR}/include)
+include_directories(${head_dir})
+
 add_library(
         fmlib
 
@@ -68,4 +74,5 @@ target_link_libraries(
         avfilter
         swscale
         avformat
+        ${log-lib}
 )

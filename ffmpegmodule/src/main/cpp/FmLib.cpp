@@ -1,5 +1,6 @@
 #include <jni.h>
 
+#include "include/ILog.h"
 #include "include/IFFmpegBase.h"
 
 /**
