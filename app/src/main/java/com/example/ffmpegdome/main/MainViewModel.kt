@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ffmpegdome.configuration.ConfigurationActivity
+import com.example.ffmpegdome.player.PlayerActivity
 
 /**
  * Time:2022/1/7 16:25
@@ -18,6 +19,7 @@ class MainViewModel : ViewModel() {
     init {
         data.value = ArrayList<ItemData>().apply {
             add(ItemData("so编译参数", ConfigurationActivity::class.java))
+            add(ItemData("软解播放", PlayerActivity::class.java))
         }
     }
 
