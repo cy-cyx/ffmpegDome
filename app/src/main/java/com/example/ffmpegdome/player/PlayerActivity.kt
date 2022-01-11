@@ -2,6 +2,8 @@ package com.example.ffmpegdome.player
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Surface
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.chat.albumlib.AlbumActivity
@@ -24,11 +26,20 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_player)
         viewModel = ViewModelProvider(this).get(PlayerViewModel::class.java)
 
-        viewModel?.videoUrl?.observe(this){
+        viewModel?.videoUrl?.observe(this) {
             tv_url.text = it
         }
 
         bn_album.setOnClickListener { viewModel?.openAlbum(this) }
+        bn_play.setOnClickListener {
+            val url = viewModel?.videoUrl?.value
+            val surfaceTexture = ttv_screen.surfaceTexture
+            if (url != null && surfaceTexture != null) {
+                viewModel?.play(url, Surface(surfaceTexture))
+            } else {
+                Toast.makeText(this, "播放错误", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

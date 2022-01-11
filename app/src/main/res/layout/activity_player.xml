@@ -15,4 +15,28 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:text="请选择视频" />
+
+    <TextureView
+        android:id="@+id/ttv_screen"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bn_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="播放" />
+
+        <Button
+            android:id="@+id/bn_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="暂停" />
+    </LinearLayout>
 </LinearLayout>

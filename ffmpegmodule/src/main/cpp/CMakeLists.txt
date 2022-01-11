@@ -51,6 +51,9 @@ set_target_properties(avformat
 #C 日志 ndk官方库
 find_library(log-lib log)
 
+#android ndk官方库
+find_library(android-lib android)
+
 set(head_dir ${CMAKE_SOURCE_DIR}/include)
 include_directories(${head_dir})
 
@@ -61,6 +64,7 @@ add_library(
 
         Fmlib.cpp
         FFmpegBase.cpp
+        FFmpegDecode.cpp
 )
 
 
@@ -75,4 +79,5 @@ target_link_libraries(
         swscale
         avformat
         ${log-lib}
+        ${android-lib}
 )
