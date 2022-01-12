@@ -1,8 +1,12 @@
 package com.example.ffmpegdome.player
 
 import android.content.Intent
+import android.graphics.Rect
+import android.graphics.SurfaceTexture
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Surface
+import android.view.TextureView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +24,7 @@ import java.util.ArrayList
 class PlayerActivity : AppCompatActivity() {
 
     private var viewModel: PlayerViewModel? = null
+    private var curSurface: Surface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +35,27 @@ class PlayerActivity : AppCompatActivity() {
             tv_url.text = it
         }
 
+        ttv_screen.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+            override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
+                curSurface = Surface(surface)
+            }
+
+            override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {
+            }
+
+            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+                curSurface = null
+                return false
+            }
+
+            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+            }
+        }
         bn_album.setOnClickListener { viewModel?.openAlbum(this) }
         bn_play.setOnClickListener {
             val url = viewModel?.videoUrl?.value
-            val surfaceTexture = ttv_screen.surfaceTexture
-            if (url != null && surfaceTexture != null) {
-                viewModel?.play(url, Surface(surfaceTexture))
+            if (url != null && curSurface != null) {
+                viewModel?.play(url, curSurface!!)
             } else {
                 Toast.makeText(this, "播放错误", Toast.LENGTH_SHORT).show()
             }
