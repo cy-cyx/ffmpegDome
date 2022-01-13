@@ -16,4 +16,8 @@ public class FFmpegNative {
     public native static String getAvCodecConfigurationNative();
 
     public native static void playNative(String url, Surface surface);
+
+    public native static long createAudioPlayer();
+
+    public native static void destroyAudioPlayer(long ptr);
 }

@@ -54,6 +54,9 @@ find_library(log-lib log)
 #android ndk官方库
 find_library(android-lib android)
 
+#OpenSLES
+find_library(openSLES-lib OpenSLES)
+
 set(head_dir ${CMAKE_SOURCE_DIR}/include)
 include_directories(${head_dir})
 
@@ -65,6 +68,7 @@ add_library(
         Fmlib.cpp
         FFmpegBase.cpp
         FFmpegDecode.cpp
+        AudioPlayer.cpp
 )
 
 
@@ -80,4 +84,5 @@ target_link_libraries(
         avformat
         ${log-lib}
         ${android-lib}
+        ${openSLES-lib}
 )

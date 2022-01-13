@@ -3,25 +3,39 @@
 #include "include/ILog.h"
 #include "include/IFFmpegBase.h"
 #include "include/IFFmpegDecode.h"
+#include "include/IAudioPlayer.h"
 
 /**
 * Created by JOYY on 2021/12/31.
  *
  * 所有面对java层的接口都定义在这里
 */
-void _play(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
-    return play(env, clazz, uri, surface);
+void _playVideoText(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
+    return playVideoText(env, clazz, uri, surface);
 }
 
 jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
     return getAvCodecConfiguration(env);
 }
 
+long _createAudioPlayer(JNIEnv *env, jclass clazz) {
+    return createAudioPlayer();
+}
+
+void _destroyAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
+    destroyAudioPlayer(playPtr);
+}
+
+/**
+ * 动态注册
+ */
 int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
             {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                        (void *) _getAvCodecConfiguration},
-            {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _play}
+            {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoText},
+            {"createAudioPlayer",             "()J",                                         (void *) _createAudioPlayer},
+            {"destroyAudioPlayer",            "(J)V",                                        (void *) _destroyAudioPlayer}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

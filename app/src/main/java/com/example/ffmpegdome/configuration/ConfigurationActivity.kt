@@ -8,8 +8,8 @@ import kotlinx.android.synthetic.main.activity_config.*
 
 /**
  * Time:2022/1/7 17:18
- * Author:
- * Description:
+ * Author:cyx
+ * Description:测试是否调通ffmpeg，打印交叉编译的信息
  */
 class ConfigurationActivity : AppCompatActivity() {
 

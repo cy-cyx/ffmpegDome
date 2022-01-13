@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ffmpegdome.configuration.ConfigurationActivity
+import com.example.ffmpegdome.opensles.OpenSLESActivity
 import com.example.ffmpegdome.player.PlayerActivity
 
 /**
@@ -20,6 +21,7 @@ class MainViewModel : ViewModel() {
         data.value = ArrayList<ItemData>().apply {
             add(ItemData("so编译参数", ConfigurationActivity::class.java))
             add(ItemData("软解播放", PlayerActivity::class.java))
+            add(ItemData("使用OpenSLES播放音频", OpenSLESActivity::class.java))
         }
     }
 

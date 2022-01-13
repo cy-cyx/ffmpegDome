@@ -186,7 +186,7 @@ void *_decode(void *argv) {
     pthread_exit(NULL);
 }
 
-void play(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
+void playVideoText(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
 
     const char *file_name = env->GetStringUTFChars(uri, NULL);
 

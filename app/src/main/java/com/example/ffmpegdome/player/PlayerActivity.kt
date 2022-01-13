@@ -18,8 +18,8 @@ import java.util.ArrayList
 
 /**
  * Time:2022/1/10 17:36
- * Author:
- * Description:
+ * Author:cyx
+ * Description:软解视频帧信息，渲染到surface
  */
 class PlayerActivity : AppCompatActivity() {
 

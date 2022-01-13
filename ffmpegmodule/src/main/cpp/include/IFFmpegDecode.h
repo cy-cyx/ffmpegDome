@@ -1,6 +1,8 @@
 //
 // Created by JOYY on 2022/1/11.
 //
+// 视频软解
+//
 #include <jni.h>
 #include <string.h>
 #include <pthread.h>
@@ -25,6 +27,6 @@ typedef struct {
     ANativeWindow *window;
 } arg_decode;
 
-void play(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
+void playVideoText(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
 
 #endif //FFMPEGDOME_IFFMPEGDECODE_H
