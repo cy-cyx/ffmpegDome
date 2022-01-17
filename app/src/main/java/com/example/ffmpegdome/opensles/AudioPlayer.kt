@@ -15,6 +15,14 @@ class AudioPlayer {
         audioNativePtr = FFmpegNative.createAudioPlayer()
     }
 
+    fun init(url: String) {
+        FFmpegNative.initUrlAudioPlayer(audioNativePtr, url)
+    }
+
+    fun play() {
+        FFmpegNative.urlAudioPlayerPlay(audioNativePtr)
+    }
+
     fun release() {
         if (audioNativePtr != -1L) {
             FFmpegNative.destroyAudioPlayer(audioNativePtr)

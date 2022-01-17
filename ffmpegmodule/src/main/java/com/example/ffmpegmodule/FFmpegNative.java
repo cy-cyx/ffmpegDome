@@ -20,4 +20,8 @@ public class FFmpegNative {
     public native static long createAudioPlayer();
 
     public native static void destroyAudioPlayer(long ptr);
+
+    public native static void initUrlAudioPlayer(long ptr, String url);
+
+    public native static void urlAudioPlayerPlay(long ptr);
 }

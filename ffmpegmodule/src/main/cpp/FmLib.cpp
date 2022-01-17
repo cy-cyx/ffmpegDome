@@ -26,6 +26,14 @@ void _destroyAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
     destroyAudioPlayer(playPtr);
 }
 
+void _initUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr, jstring url) {
+    initUrlAudioPlayer(env, playPtr, url);
+}
+
+void _urlAudioPlayerPlay(JNIEnv *env, jclass clazz, long playPtr) {
+    urlAudioPlayerPlay(playPtr);
+}
+
 /**
  * 动态注册
  */
@@ -35,7 +43,9 @@ int registerNativeMethods(JNIEnv *env) {
             {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                        (void *) _getAvCodecConfiguration},
             {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoText},
             {"createAudioPlayer",             "()J",                                         (void *) _createAudioPlayer},
-            {"destroyAudioPlayer",            "(J)V",                                        (void *) _destroyAudioPlayer}
+            {"destroyAudioPlayer",            "(J)V",                                        (void *) _destroyAudioPlayer},
+            {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                      (void *) _initUrlAudioPlayer},
+            {"urlAudioPlayerPlay",            "(J)V",                                        (void *) _urlAudioPlayerPlay}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

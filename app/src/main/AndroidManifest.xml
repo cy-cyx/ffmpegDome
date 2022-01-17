@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ffmpegdome" >
+    package="com.example.ffmpegdome">
 
     <application
         android:allowBackup="true"
@@ -8,10 +8,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FfmpegDome" >
+        android:theme="@style/Theme.FfmpegDome">
         <activity
             android:name=".main.MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,7 +20,9 @@
         </activity>
         <activity android:name=".configuration.ConfigurationActivity" />
         <activity android:name=".player.PlayerActivity" />
-        <activity android:name=".opensles.OpenSLESActivity" />
+        <activity
+            android:name=".opensles.OpenSLESActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
