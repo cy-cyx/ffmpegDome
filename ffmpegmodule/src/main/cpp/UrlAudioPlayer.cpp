@@ -1,10 +1,15 @@
 //
 // Created by JOYY on 2022/1/13.
 //
-#include "IAudioPlayer.h"
+#include "IUrlAudioPlayer.h"
 
-long createAudioPlayer() {
-    AudioPlayerInfo *playInfo = new AudioPlayerInfo();
+// 播放url无回调
+void urlPlayCallback(SLPlayItf caller, void *pContext, SLuint32 event) {
+    LOGI("audio", "播放回调 %d", event);
+}
+
+long createUrlAudioPlayer() {
+    UrlAudioPlayerInfo *playInfo = new UrlAudioPlayerInfo();
     SLObjectItf engineObject;
     SLEngineItf engineEngine;
     SLObjectItf outputMixObject;
@@ -67,8 +72,8 @@ long createAudioPlayer() {
     return (long) playInfo;
 }
 
-void destroyAudioPlayer(long playPtr) {
-    AudioPlayerInfo *playInfo = (AudioPlayerInfo *) playPtr;
+void destroyUrlAudioPlayer(long playPtr) {
+    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
 
     if (NULL == playInfo->engineObject)return;
 
@@ -93,7 +98,7 @@ void destroyAudioPlayer(long playPtr) {
 }
 
 void initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
-    AudioPlayerInfo *playInfo = (AudioPlayerInfo *) playPtr;
+    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
     SLEngineItf engineEngine = playInfo->engineEngine;
 
     SLresult result;
@@ -134,11 +139,22 @@ void initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
     }
     playInfo->uriPlayerPlay = uriPlayerPlay;
 
+    (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADATEND);
+    (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADATMARKER);
+    (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADATNEWPOS);
+    (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADMOVING);
+    (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADSTALLED);
+
+    result = (*uriPlayerPlay)->RegisterCallback(uriPlayerPlay, urlPlayCallback, playInfo);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "RegisterCallback失败");
+    }
+
     LOGI("audio", "初始化uri播放器成功");
 }
 
 void urlAudioPlayerPlay(long playPtr) {
-    AudioPlayerInfo *playInfo = (AudioPlayerInfo *) playPtr;
+    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
     SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
     SLresult result;
 
@@ -148,4 +164,20 @@ void urlAudioPlayerPlay(long playPtr) {
     }
 
     LOGE("audio", "播放成功");
+}
+
+unsigned int urlAudioPlayerGetState(long playPtr) {
+    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
+    SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
+    SLresult result;
+
+    SLuint32 state;
+    result = (*uriPlayerPlay)->GetPlayState(uriPlayerPlay, &state);
+
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "获取状态失败");
+        return -1;
+    } else {
+        return state;
+    }
 }

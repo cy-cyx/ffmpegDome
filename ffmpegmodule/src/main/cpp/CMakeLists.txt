@@ -68,7 +68,7 @@ add_library(
         Fmlib.cpp
         FFmpegBase.cpp
         FFmpegDecode.cpp
-        AudioPlayer.cpp
+        UrlAudioPlayer.cpp
 )
 
 

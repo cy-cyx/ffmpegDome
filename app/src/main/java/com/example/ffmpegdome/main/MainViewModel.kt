@@ -21,7 +21,7 @@ class MainViewModel : ViewModel() {
         data.value = ArrayList<ItemData>().apply {
             add(ItemData("so编译参数", ConfigurationActivity::class.java))
             add(ItemData("软解播放", PlayerActivity::class.java))
-            add(ItemData("使用OpenSLES播放音频", OpenSLESActivity::class.java))
+            add(ItemData("使用OpenSLES播放url", OpenSLESActivity::class.java))
         }
     }
 

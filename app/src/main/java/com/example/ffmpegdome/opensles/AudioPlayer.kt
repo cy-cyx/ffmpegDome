@@ -12,7 +12,7 @@ class AudioPlayer {
     var audioNativePtr: Long = -1
 
     init {
-        audioNativePtr = FFmpegNative.createAudioPlayer()
+        audioNativePtr = FFmpegNative.createUrlAudioPlayer()
     }
 
     fun init(url: String) {
@@ -25,8 +25,12 @@ class AudioPlayer {
 
     fun release() {
         if (audioNativePtr != -1L) {
-            FFmpegNative.destroyAudioPlayer(audioNativePtr)
+            FFmpegNative.destroyUrlAudioPlayer(audioNativePtr)
             audioNativePtr = -1L
         }
+    }
+
+    fun getState(): Int {
+        return FFmpegNative.urlAudioPlayerGetState(audioNativePtr)
     }
 }

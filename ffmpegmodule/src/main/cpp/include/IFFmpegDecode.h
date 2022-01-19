@@ -27,6 +27,6 @@ typedef struct {
     ANativeWindow *window;
 } arg_decode;
 
-void playVideoText(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
+void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
 
 #endif //FFMPEGDOME_IFFMPEGDECODE_H

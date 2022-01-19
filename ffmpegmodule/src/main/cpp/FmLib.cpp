@@ -3,27 +3,27 @@
 #include "include/ILog.h"
 #include "include/IFFmpegBase.h"
 #include "include/IFFmpegDecode.h"
-#include "include/IAudioPlayer.h"
+#include "include/IUrlAudioPlayer.h"
 
 /**
 * Created by JOYY on 2021/12/31.
  *
  * 所有面对java层的接口都定义在这里
 */
-void _playVideoText(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
-    return playVideoText(env, clazz, uri, surface);
+void _playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
+    return playVideoTest(env, clazz, uri, surface);
 }
 
 jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
     return getAvCodecConfiguration(env);
 }
 
-long _createAudioPlayer(JNIEnv *env, jclass clazz) {
-    return createAudioPlayer();
+long _createUrlAudioPlayer(JNIEnv *env, jclass clazz) {
+    return createUrlAudioPlayer();
 }
 
-void _destroyAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
-    destroyAudioPlayer(playPtr);
+void _destroyUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
+    destroyUrlAudioPlayer(playPtr);
 }
 
 void _initUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr, jstring url) {
@@ -34,6 +34,10 @@ void _urlAudioPlayerPlay(JNIEnv *env, jclass clazz, long playPtr) {
     urlAudioPlayerPlay(playPtr);
 }
 
+int _urlAudioPlayerGetState(JNIEnv *env, jclass clazz, long playPtr) {
+    return (int) urlAudioPlayerGetState(playPtr);
+}
+
 /**
  * 动态注册
  */
@@ -41,11 +45,12 @@ int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
             {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                        (void *) _getAvCodecConfiguration},
-            {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoText},
-            {"createAudioPlayer",             "()J",                                         (void *) _createAudioPlayer},
-            {"destroyAudioPlayer",            "(J)V",                                        (void *) _destroyAudioPlayer},
+            {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoTest},
+            {"createUrlAudioPlayer",          "()J",                                         (void *) _createUrlAudioPlayer},
+            {"destroyUrlAudioPlayer",         "(J)V",                                        (void *) _destroyUrlAudioPlayer},
             {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                      (void *) _initUrlAudioPlayer},
-            {"urlAudioPlayerPlay",            "(J)V",                                        (void *) _urlAudioPlayerPlay}
+            {"urlAudioPlayerPlay",            "(J)V",                                        (void *) _urlAudioPlayerPlay},
+            {"urlAudioPlayerGetState",        "(J)I",                                        (void *) _urlAudioPlayerGetState}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

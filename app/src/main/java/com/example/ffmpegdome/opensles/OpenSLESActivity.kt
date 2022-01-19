@@ -3,6 +3,7 @@ package com.example.ffmpegdome.opensles
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.ffmpegdome.R
+import com.example.ffmpegmodule.FFmpegNative
 import kotlinx.android.synthetic.main.activity_opensles.*
 
 /**
@@ -27,6 +28,17 @@ class OpenSLESActivity : AppCompatActivity() {
 
         bn_play.setOnClickListener {
             audioPlayer?.play()
+        }
+
+        bn_state.setOnClickListener {
+            val state = audioPlayer?.getState()
+            state?.let {
+                when (it) {
+                    FFmpegNative.PLAYSTATE_STOPPED -> tv_state.text = "初始化"
+                    FFmpegNative.PLAYSTATE_PLAYING -> tv_state.text = "播放中"
+                    FFmpegNative.PLAYSTATE_PAUSED -> tv_state.text = "暂停（播放结束）"
+                }
+            }
         }
     }
 
