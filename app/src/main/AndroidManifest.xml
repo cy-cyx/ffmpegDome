@@ -23,6 +23,7 @@
         <activity
             android:name=".opensles.OpenSLESActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".playvideoofaudio.PlayVideoOfAudioActivity" />
     </application>
 
 </manifest>

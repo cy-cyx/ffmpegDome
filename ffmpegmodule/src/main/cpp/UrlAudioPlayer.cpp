@@ -1,6 +1,7 @@
 //
 // Created by JOYY on 2022/1/13.
 //
+#include <cstdlib>
 #include "IUrlAudioPlayer.h"
 
 // 播放url无回调
@@ -92,6 +93,8 @@ void destroyUrlAudioPlayer(long playPtr) {
         (*(playInfo->engineObject))->Destroy(playInfo->engineObject);
         playInfo->engineEngine = NULL;
     }
+
+    free(playInfo);
 
     LOGI("audio", "销毁AudioPlayer完毕");
 

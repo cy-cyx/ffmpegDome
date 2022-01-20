@@ -30,4 +30,6 @@ public class FFmpegNative {
     public native static void urlAudioPlayerPlay(long ptr);
 
     public native static int urlAudioPlayerGetState(long ptr);
+
+    public native static void playVideoOfAudioNative(String url);
 }

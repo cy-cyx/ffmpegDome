@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.ffmpegdome.configuration.ConfigurationActivity
 import com.example.ffmpegdome.opensles.OpenSLESActivity
 import com.example.ffmpegdome.player.PlayerActivity
+import com.example.ffmpegdome.playvideoofaudio.PlayVideoOfAudioActivity
 
 /**
  * Time:2022/1/7 16:25
@@ -22,6 +23,7 @@ class MainViewModel : ViewModel() {
             add(ItemData("so编译参数", ConfigurationActivity::class.java))
             add(ItemData("软解播放", PlayerActivity::class.java))
             add(ItemData("使用OpenSLES播放url", OpenSLESActivity::class.java))
+            add(ItemData("播放视频中的音频", PlayVideoOfAudioActivity::class.java))
         }
     }
 

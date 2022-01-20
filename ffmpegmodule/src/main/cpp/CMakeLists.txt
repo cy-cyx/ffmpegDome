@@ -69,6 +69,8 @@ add_library(
         FFmpegBase.cpp
         FFmpegDecode.cpp
         UrlAudioPlayer.cpp
+        BlockQueue.cpp
+        FFmpegDecode1.cpp
 )
 
 

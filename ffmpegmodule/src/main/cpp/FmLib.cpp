@@ -38,6 +38,10 @@ int _urlAudioPlayerGetState(JNIEnv *env, jclass clazz, long playPtr) {
     return (int) urlAudioPlayerGetState(playPtr);
 }
 
+void _playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
+    playVideoOfAudio(env, clazz, uri);
+}
+
 /**
  * 动态注册
  */
@@ -50,7 +54,8 @@ int registerNativeMethods(JNIEnv *env) {
             {"destroyUrlAudioPlayer",         "(J)V",                                        (void *) _destroyUrlAudioPlayer},
             {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                      (void *) _initUrlAudioPlayer},
             {"urlAudioPlayerPlay",            "(J)V",                                        (void *) _urlAudioPlayerPlay},
-            {"urlAudioPlayerGetState",        "(J)I",                                        (void *) _urlAudioPlayerGetState}
+            {"urlAudioPlayerGetState",        "(J)I",                                        (void *) _urlAudioPlayerGetState},
+            {"playVideoOfAudioNative",        "(Ljava/lang/String;)V",                       (void *) _playVideoOfAudio}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

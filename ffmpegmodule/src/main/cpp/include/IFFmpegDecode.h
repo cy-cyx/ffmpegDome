@@ -11,6 +11,7 @@
 #include <android/native_window_jni.h>
 
 #include "ILog.h"
+#include "IBlockQueue.h"
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -28,5 +29,7 @@ typedef struct {
 } arg_decode;
 
 void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
+
+void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri);
 
 #endif //FFMPEGDOME_IFFMPEGDECODE_H
