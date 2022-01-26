@@ -103,6 +103,32 @@ void *_decodeAudio(void *argv) {
         pthread_exit(NULL);
     }
 
+    SwrContext *swrContext = swr_alloc();
+    if (!swrContext) {
+        LOGE("decode", "新建编解码器失败。");
+        pthread_exit(NULL);
+    }
+    av_opt_set_int(swrContext, "in_channel_layout", channel_layout, 0);
+    av_opt_set_int(swrContext, "in_sample_rate", sample_rate, 0);
+    av_opt_set_sample_fmt(swrContext, "in_sample_fmt", sampleFormat, 0);
+
+    av_opt_set_int(swrContext, "out_channel_layout", outSwrChannelLayout, 0);
+    av_opt_set_int(swrContext, "out_sample_rate", outSwrSampleRate, 0);
+    av_opt_set_sample_fmt(swrContext, "out_sample_fmt", outSwrSampleFormat, 0);
+    int code = swr_init(swrContext);
+    if (code != 0) {
+        LOGE("decode", "初始化编解码器失败。");
+        pthread_exit(NULL);
+    }
+
+    int outSwrNbSamples = (int) av_rescale_rnd(ACC_NB_SAMPLES, outSwrSampleRate, avCodecContext->sample_rate,
+                                               AV_ROUND_UP);
+    LOGI("decode", "输出的样本大小 %d", outSwrNbSamples);
+    int outSwrFrameDataSize = av_samples_get_buffer_size(NULL, outSwrChannelLayout, outSwrNbSamples, outSwrSampleFormat,
+                                                         1);
+    LOGI("decode", "输出的数据大小 %d", outSwrFrameDataSize);
+    uint8_t *outSwrAudioOutBuffer = (uint8_t *) malloc(outSwrFrameDataSize);
+
     LOGE("decode", "开始解码");
 
     int ret;
@@ -121,7 +147,11 @@ void *_decodeAudio(void *argv) {
 
             while (avcodec_receive_frame(avCodecContext, frameDecode) == 0) {
                 LOGE("decode", "从解码器中，取出一帧的音频数据 样本数 %d", frameDecode->nb_samples);
-
+                int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSwrFrameDataSize / outSwrChannel,
+                                         (const uint8_t **) frameDecode->data, frameDecode->nb_samples);
+                if (result > 0) {
+                    LOGE("decode", "重采样成功 重采样样本数 %d", result);
+                }
             }
         }
         // 清掉这一个帧的数据了
