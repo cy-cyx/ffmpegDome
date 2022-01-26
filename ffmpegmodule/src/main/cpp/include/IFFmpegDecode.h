@@ -18,15 +18,27 @@ extern "C" {
 #include <libavutil/imgutils.h>
 #include <libswscale/swscale.h>
 #include <libavcodec/avcodec.h>
+#include <libswresample/swresample.h>
+#include <libavutil/opt.h>
 }
 
 #ifndef FFMPEGDOME_IFFMPEGDECODE_H
 #define FFMPEGDOME_IFFMPEGDECODE_H
 
+// 重采样的输出参数
+const int outChannel = 2;
+const AVSampleFormat outSampleFormat = AV_SAMPLE_FMT_S16P;
+const int outSampleRate = 44100;
+
 typedef struct {
     const char *url;
     ANativeWindow *window;
 } arg_decode;
+
+typedef struct {
+    const char *url;
+    BlockQueue *queue;
+} AudioDecodeInfo;
 
 void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
 

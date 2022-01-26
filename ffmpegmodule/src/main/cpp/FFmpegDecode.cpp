@@ -3,7 +3,7 @@
 //
 #include "IFFmpegDecode.h"
 
-void *_decode(void *argv) {
+void *_decodeVideo(void *argv) {
     arg_decode *arg = (arg_decode *) argv;
     LOGI("play", "在线程中准备开始软解 %s", arg->url);
 
@@ -114,6 +114,7 @@ void *_decode(void *argv) {
     // 获得帧数据大小
     int numBytes = av_image_get_buffer_size(AV_PIX_FMT_RGBA, avCodecContext->width, avCodecContext->height, 1);
 
+    // 获得转码的缓冲区
     uint8_t *buffer = (uint8_t *) av_malloc(numBytes * sizeof(uint8_t));
     av_image_fill_arrays(frameRGBA->data, frameRGBA->linesize, buffer, AV_PIX_FMT_RGBA,
                          avCodecContext->width, avCodecContext->height, 1);
@@ -129,7 +130,7 @@ void *_decode(void *argv) {
         LOGE("play", "无法初始化转换上下文！");
         pthread_exit(NULL);
     }
-    LOGI("play", "格式转换成功");
+    LOGI("play", "初始化格式转换成功");
 
     LOGE("play", "开始播放");
     int ret;
@@ -201,5 +202,5 @@ void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
     arg->url = file_name;
     arg->window = nativeWindow;
 
-    pthread_create(&threadPrt, NULL, _decode, arg);
+    pthread_create(&threadPrt, NULL, _decodeVideo, arg);
 }
