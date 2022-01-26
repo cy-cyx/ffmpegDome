@@ -128,6 +128,10 @@ void *_decodeAudio(void *argv) {
                                                          1);
     LOGI("decode", "输出的数据大小 %d", outSwrFrameDataSize);
     uint8_t *outSwrAudioOutBuffer = (uint8_t *) malloc(outSwrFrameDataSize);
+//  备注由于带P和不带P  的存储方式是不同 故用错时会有空指针的崩溃
+//    uint8_t *outSwrAudioOutBuffer[2];
+//    outSwrAudioOutBuffer[0] = (uint8_t *) malloc(outSwrFrameDataSize);
+//    outSwrAudioOutBuffer[1] = (uint8_t *) malloc(outSwrFrameDataSize);
 
     LOGE("decode", "开始解码");
 
