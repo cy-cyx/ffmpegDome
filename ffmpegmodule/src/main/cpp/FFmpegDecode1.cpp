@@ -151,10 +151,32 @@ void *_decodeAudio(void *argv) {
 
             while (avcodec_receive_frame(avCodecContext, frameDecode) == 0) {
                 LOGE("decode", "从解码器中，取出一帧的音频数据 样本数 %d", frameDecode->nb_samples);
-                int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSwrFrameDataSize / outSwrChannel,
+                int outSamples = outSwrFrameDataSize / outSwrChannel;
+                int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSamples,
                                          (const uint8_t **) frameDecode->data, frameDecode->nb_samples);
                 if (result > 0) {
-                    LOGE("decode", "重采样成功 重采样样本数 %d", result);
+                    LOGE("decode", "重采样成功 重采样样本: %d out:%d", result, outSamples);
+
+                    // 复制整个数组
+                    uint8_t *frameData = (uint8_t *) malloc(outSwrFrameDataSize);
+                    memcpy(frameData, outSwrAudioOutBuffer, sizeof(uint8_t) * outSwrFrameDataSize);
+
+                    if (info->bufferLast > 0) {
+
+                        SLAndroidSimpleBufferQueueItf bufferQueueItf = info->bufferQueueItf;
+                        SLresult queueResult = (*bufferQueueItf)->Enqueue(bufferQueueItf, frameData, outSamples);
+                        if (SL_RESULT_SUCCESS == queueResult) {
+                            LOGE("audio", "插入队列成功(直接)");
+                        }
+
+                        info->bufferLast--;
+                    } else {
+                        AudioFrame *audioFrame = new AudioFrame();
+                        audioFrame->size = outSamples;
+                        audioFrame->frameData = frameData;
+                        info->queue->pull(audioFrame);
+                        LOGE("audio", "插入缓存队列");
+                    }
                 }
             }
         }
@@ -171,6 +193,130 @@ void *_decodeAudio(void *argv) {
     pthread_exit(NULL);
 }
 
+void bufferCallback(SLAndroidSimpleBufferQueueItf bufferQueue, void *context) {
+    LOGE("audio", "队列回调");
+    AudioDecodeInfo *info = (AudioDecodeInfo *) context;
+
+    BlockQueue *queue = info->queue;
+    AudioFrame *frame = (AudioFrame *) queue->poll();
+    LOGE("audio", "取出缓存队列");
+
+    SLAndroidSimpleBufferQueueItf bufferQueueItf = info->bufferQueueItf;
+    SLresult queueResult = (*bufferQueueItf)->Enqueue(bufferQueueItf, frame->frameData, frame->size);
+    if (SL_RESULT_SUCCESS == queueResult) {
+        LOGE("audio", "插入队列成功呢(回调里)");
+    }
+
+}
+
+void initBufferAudioPlay(AudioDecodeInfo *info) {
+    SLObjectItf engineObject;
+    SLEngineItf engineEngine;
+    SLObjectItf outputMixObject;
+    SLEnvironmentalReverbItf outputMixEnvironmentalReverb;
+
+    SLresult result;
+    // 创建引擎
+    result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "新建引擎失败");
+    }
+    // 初始化引擎
+    result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "初始化引擎失败");
+    }
+
+    // 获取引擎接口，这是创建其他对象所必需的
+    result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "创建引擎接口失败");
+    }
+
+    // 创建输出混音，环境混响指定为非必需接口
+    const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
+    const SLboolean req[1] = {SL_BOOLEAN_FALSE};
+    result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "创建输出混音失败");
+    }
+
+    // 初始化混音接口
+    result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "初始化混音失败");
+    }
+
+    // 设置环境混响
+    result = (*outputMixObject)->GetInterface(outputMixObject, SL_IID_ENVIRONMENTALREVERB,
+                                              &outputMixEnvironmentalReverb);
+    if (SL_RESULT_SUCCESS == result) {
+        SLEnvironmentalReverbSettings reverbSettings =
+                SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
+        result = (*outputMixEnvironmentalReverb)->SetEnvironmentalReverbProperties(
+                outputMixEnvironmentalReverb, &reverbSettings);
+        if (SL_RESULT_SUCCESS != result) {
+            LOGE("audio", "设置环境混音失败");
+        }
+    } else {
+        LOGE("audio", "获得环境混音失败");
+    }
+
+    SLDataLocator_AndroidSimpleBufferQueue android_queue = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
+    SLDataFormat_PCM pcm = {
+            SL_DATAFORMAT_PCM,//format type
+            (SLuint32) 2,// 重采样后声道2
+            SL_SAMPLINGRATE_44_1,// 重采样后44100hz
+            SL_PCMSAMPLEFORMAT_FIXED_16,// 重采样后每个样本16位
+            SL_PCMSAMPLEFORMAT_FIXED_16,// container size
+            SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT,// channel mask
+            SL_BYTEORDER_LITTLEENDIAN // endianness
+    };
+    SLDataSource slDataSource = {&android_queue, &pcm};
+
+    // 配置音频接收器
+    SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
+    SLDataSink audioSnk = {&loc_outmix, NULL};
+
+    const SLInterfaceID ids2[1] = {SL_IID_BUFFERQUEUE};
+    const SLboolean req2[1] = {SL_BOOLEAN_TRUE};
+
+    SLObjectItf playerObject;
+    result = (*engineEngine)->CreateAudioPlayer(engineEngine, &playerObject, &slDataSource, &audioSnk, 1, ids2, req2);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "创建播放器失败");
+    }
+
+    result = (*playerObject)->Realize(playerObject, SL_BOOLEAN_FALSE);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "初始化播放器失败");
+    }
+
+    SLPlayItf uriPlayerPlay;
+    result = (*playerObject)->GetInterface(playerObject, SL_IID_PLAY, &uriPlayerPlay);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "创建播放器控制失败");
+    }
+
+    SLAndroidSimpleBufferQueueItf m_BufferQueue;
+    result = (*playerObject)->GetInterface(playerObject, SL_IID_BUFFERQUEUE, &m_BufferQueue);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "创建播放器播放队列");
+    }
+    info->bufferQueueItf = m_BufferQueue;
+    info->bufferLast = 2;
+
+    result = (*m_BufferQueue)->RegisterCallback(m_BufferQueue, bufferCallback, info);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "注册队列回调失败");
+    }
+
+    result = (*uriPlayerPlay)->SetPlayState(uriPlayerPlay, SL_PLAYSTATE_PLAYING);
+    if (SL_RESULT_SUCCESS != result) {
+        LOGE("audio", "播放失败");
+    }
+}
+
 void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
     pthread_t threadPrt;
 
@@ -182,6 +328,9 @@ void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
     AudioDecodeInfo *info = new AudioDecodeInfo();
     info->url = file_name;
     info->queue = queue;
+
+    // 初始化opensl播放
+    initBufferAudioPlay(info);
 
     // 开一条线程解码，一条播放
     pthread_create(&threadPrt, NULL, _decodeAudio, info);
