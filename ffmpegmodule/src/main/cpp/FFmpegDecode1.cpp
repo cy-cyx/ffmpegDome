@@ -124,7 +124,7 @@ void *_decodeAudio(void *argv) {
     int outSwrNbSamples = (int) av_rescale_rnd(ACC_NB_SAMPLES, outSwrSampleRate, avCodecContext->sample_rate,
                                                AV_ROUND_UP);
     LOGI("decode", "输出的样本大小 %d", outSwrNbSamples);
-    int outSwrFrameDataSize = av_samples_get_buffer_size(NULL, outSwrChannelLayout, outSwrNbSamples, outSwrSampleFormat,
+    int outSwrFrameDataSize = av_samples_get_buffer_size(NULL, outSwrChannel, outSwrNbSamples, outSwrSampleFormat,
                                                          1);
     LOGI("decode", "输出的数据大小 %d", outSwrFrameDataSize);
     uint8_t *outSwrAudioOutBuffer = (uint8_t *) malloc(outSwrFrameDataSize);
@@ -151,11 +151,10 @@ void *_decodeAudio(void *argv) {
 
             while (avcodec_receive_frame(avCodecContext, frameDecode) == 0) {
                 LOGE("decode", "从解码器中，取出一帧的音频数据 样本数 %d", frameDecode->nb_samples);
-                int outSamples = outSwrFrameDataSize / outSwrChannel;
-                int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSamples,
+                int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSwrFrameDataSize / outSwrChannel,
                                          (const uint8_t **) frameDecode->data, frameDecode->nb_samples);
                 if (result > 0) {
-                    LOGE("decode", "重采样成功 重采样样本: %d out:%d", result, outSamples);
+                    LOGE("decode", "重采样成功 重采样样本: %d out:%d", result, outSwrFrameDataSize);
 
                     // 复制整个数组
                     uint8_t *frameData = (uint8_t *) malloc(outSwrFrameDataSize);
@@ -164,7 +163,8 @@ void *_decodeAudio(void *argv) {
                     if (info->bufferLast > 0) {
 
                         SLAndroidSimpleBufferQueueItf bufferQueueItf = info->bufferQueueItf;
-                        SLresult queueResult = (*bufferQueueItf)->Enqueue(bufferQueueItf, frameData, outSamples);
+                        SLresult queueResult = (*bufferQueueItf)->Enqueue(bufferQueueItf, frameData,
+                                                                          outSwrFrameDataSize);
                         if (SL_RESULT_SUCCESS == queueResult) {
                             LOGE("audio", "插入队列成功(直接)");
                         }
@@ -172,7 +172,7 @@ void *_decodeAudio(void *argv) {
                         info->bufferLast--;
                     } else {
                         AudioFrame *audioFrame = new AudioFrame();
-                        audioFrame->size = outSamples;
+                        audioFrame->size = outSwrFrameDataSize;
                         audioFrame->frameData = frameData;
                         info->queue->pull(audioFrame);
                         LOGE("audio", "插入缓存队列");
