@@ -9,8 +9,8 @@ void urlPlayCallback(SLPlayItf caller, void *pContext, SLuint32 event) {
     LOGI("audio", "播放回调 %d", event);
 }
 
-long createUrlAudioPlayer() {
-    UrlAudioPlayerInfo *playInfo = new UrlAudioPlayerInfo();
+long fm_createUrlAudioPlayer() {
+    fm_UrlAudioPlayerInfo *playInfo = new fm_UrlAudioPlayerInfo();
     SLObjectItf engineObject;
     SLEngineItf engineEngine;
     SLObjectItf outputMixObject;
@@ -73,8 +73,8 @@ long createUrlAudioPlayer() {
     return (long) playInfo;
 }
 
-void destroyUrlAudioPlayer(long playPtr) {
-    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
+void fm_destroyUrlAudioPlayer(long playPtr) {
+    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
 
     if (NULL == playInfo->engineObject)return;
 
@@ -100,8 +100,8 @@ void destroyUrlAudioPlayer(long playPtr) {
 
 }
 
-void initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
-    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
+void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
+    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
     SLEngineItf engineEngine = playInfo->engineEngine;
 
     SLresult result;
@@ -156,8 +156,8 @@ void initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
     LOGI("audio", "初始化uri播放器成功");
 }
 
-void urlAudioPlayerPlay(long playPtr) {
-    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
+void fm_urlAudioPlayerPlay(long playPtr) {
+    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
     SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
     SLresult result;
 
@@ -169,8 +169,8 @@ void urlAudioPlayerPlay(long playPtr) {
     LOGE("audio", "播放成功");
 }
 
-unsigned int urlAudioPlayerGetState(long playPtr) {
-    UrlAudioPlayerInfo *playInfo = (UrlAudioPlayerInfo *) playPtr;
+unsigned int fm_urlAudioPlayerGetState(long playPtr) {
+    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
     SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
     SLresult result;
 

@@ -28,29 +28,10 @@ extern "C" {
 #ifndef FFMPEGDOME_IFFMPEGDECODE_H
 #define FFMPEGDOME_IFFMPEGDECODE_H
 
-// 重采样的输出参数
-const int outSwrChannel = 2;
-const int outSwrChannelLayout = AV_CH_LAYOUT_STEREO;
-const AVSampleFormat outSwrSampleFormat = AV_SAMPLE_FMT_S16;
-const int outSwrSampleRate = 44100;
-const int ACC_NB_SAMPLES = 1024; // acc是一帧1024
-
-typedef struct {
-    uint8_t *frameData;
-    int size;
-} AudioFrame;
-
 typedef struct {
     const char *url;
     ANativeWindow *window;
 } arg_decode;
-
-typedef struct {
-    const char *url;
-    BlockQueue *queue;
-    int bufferLast;
-    SLAndroidSimpleBufferQueueItf bufferQueueItf;
-} AudioDecodeInfo;
 
 void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface);
 

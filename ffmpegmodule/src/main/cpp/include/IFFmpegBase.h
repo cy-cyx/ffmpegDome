@@ -13,7 +13,7 @@ extern "C" {
 
 #ifndef FFMPEGDOME_IFFMPEGBASE_H
 
-jstring getAvCodecConfiguration(JNIEnv *env);
+jstring fm_getAvCodecConfiguration(JNIEnv *env);
 
 #define FFMPEGDOME_IFFMPEGBASE_H
 

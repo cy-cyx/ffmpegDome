@@ -15,27 +15,27 @@ void _playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
 }
 
 jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
-    return getAvCodecConfiguration(env);
+    return fm_getAvCodecConfiguration(env);
 }
 
 long _createUrlAudioPlayer(JNIEnv *env, jclass clazz) {
-    return createUrlAudioPlayer();
+    return fm_createUrlAudioPlayer();
 }
 
 void _destroyUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
-    destroyUrlAudioPlayer(playPtr);
+    fm_destroyUrlAudioPlayer(playPtr);
 }
 
 void _initUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr, jstring url) {
-    initUrlAudioPlayer(env, playPtr, url);
+    fm_initUrlAudioPlayer(env, playPtr, url);
 }
 
 void _urlAudioPlayerPlay(JNIEnv *env, jclass clazz, long playPtr) {
-    urlAudioPlayerPlay(playPtr);
+    fm_urlAudioPlayerPlay(playPtr);
 }
 
 int _urlAudioPlayerGetState(JNIEnv *env, jclass clazz, long playPtr) {
-    return (int) urlAudioPlayerGetState(playPtr);
+    return (int) fm_urlAudioPlayerGetState(playPtr);
 }
 
 void _playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {

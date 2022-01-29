@@ -19,20 +19,20 @@ typedef struct {
     // uri
     SLObjectItf uriPlayerObject;
     SLPlayItf uriPlayerPlay;
-} UrlAudioPlayerInfo;
+} fm_UrlAudioPlayerInfo;
 
 // 输出混合的辅助效果，由缓冲队列播放器使用
 static const SLEnvironmentalReverbSettings reverbSettings =
         SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
 
-long createUrlAudioPlayer();
+long fm_createUrlAudioPlayer();
 
-void destroyUrlAudioPlayer(long playPtr);
+void fm_destroyUrlAudioPlayer(long playPtr);
 
-void initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url);
+void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url);
 
-void urlAudioPlayerPlay(long playPtr);
+void fm_urlAudioPlayerPlay(long playPtr);
 
-unsigned int urlAudioPlayerGetState(long playPtr);
+unsigned int fm_urlAudioPlayerGetState(long playPtr);
 
 #endif //FFMPEGDOME_IAUDIOPLAYER_H

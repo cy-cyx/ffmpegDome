@@ -71,6 +71,8 @@ add_library(
         UrlAudioPlayer.cpp
         BlockQueue.cpp
         FFmpegDecode1.cpp
+        render/AudioRender.cpp
+        decode/AudioDecode.cpp
 )
 
 

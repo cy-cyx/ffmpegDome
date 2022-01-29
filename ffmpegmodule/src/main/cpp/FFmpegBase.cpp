@@ -3,7 +3,7 @@
 //
 #include "include/IFFmpegBase.h"
 
-jstring getAvCodecConfiguration(JNIEnv *env) {
+jstring fm_getAvCodecConfiguration(JNIEnv *env) {
     char info[10000] = {0};
     sprintf(info, "%s\n", avcodec_configuration());
     return (*env).NewStringUTF(info);
