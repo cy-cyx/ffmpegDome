@@ -22,13 +22,13 @@ void *fm_AudioDecode::decodeTask(void *decode) {
 
         // 打开一个输入流
         if (avformat_open_input(&formatContext, decoder->url, NULL, NULL) != 0) {
-            LOGE("play", "不能打开对应文件 %s", decoder->url);
+            LOGE("decode", "不能打开对应文件 %s", decoder->url);
             break;
         }
 
         // 找到相关流信息
         if (avformat_find_stream_info(formatContext, NULL) < 0) {
-            LOGE("play", "找不到相关流信息");
+            LOGE("decode", "找不到相关流信息");
             break;
         }
 
@@ -42,7 +42,7 @@ void *fm_AudioDecode::decodeTask(void *decode) {
             }
         }
         if (audioStream == -1) {
-            LOGE("play", "找不到视频流");
+            LOGE("decode", "找不到视频流");
             break;
         }
 

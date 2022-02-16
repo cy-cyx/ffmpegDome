@@ -70,9 +70,10 @@ add_library(
         FFmpegDecode.cpp
         UrlAudioPlayer.cpp
         BlockQueue.cpp
-        FFmpegDecode1.cpp
         render/AudioRender.cpp
+        render/VideoRender.cpp
         decode/AudioDecode.cpp
+        decode/VideoDecode.cpp
 )
 
 
