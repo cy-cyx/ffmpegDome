@@ -21,6 +21,9 @@ void *fm_VideoRender::renderTask(void *render) {
         // lock native window buffer
         fm_VideoFrame *frame = (fm_VideoFrame *) videoRender->blockQueue->poll();
 
+        // 判断时间戳
+
+
         LOGI("videoRender", "从队列拿出一帧开始画");
 
         ANativeWindow_lock(videoRender->nativeWindow, &windowBuffer, 0);
@@ -47,7 +50,7 @@ void *fm_VideoRender::renderTask(void *render) {
     pthread_exit(NULL);
 }
 
-void fm_VideoRender::pullFrame(AVFrame *avFrame, int timestamp, int width, int height) {
+void fm_VideoRender::pullFrame(AVFrame *avFrame, double timestamp, int width, int height) {
     fm_VideoFrame *frame = new fm_VideoFrame();
     frame->avFrame = avFrame;
     frame->timestamp = timestamp;

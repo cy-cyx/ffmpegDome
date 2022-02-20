@@ -17,7 +17,7 @@ extern "C" {
 
 typedef struct {
     AVFrame *avFrame;
-    int timestamp;
+    double timestamp;
     int width;
     int height;
 } fm_VideoFrame;
@@ -31,7 +31,7 @@ public:
     void execute();
 
     //存在阻塞
-    void pullFrame(AVFrame *avFrame, int timestamp, int width, int height);
+    void pullFrame(AVFrame *avFrame, double timestamp, int width, int height);
 
     void releaseRender();
 

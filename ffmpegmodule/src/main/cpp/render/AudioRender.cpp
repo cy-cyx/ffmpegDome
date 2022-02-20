@@ -109,6 +109,8 @@ void fm_AudioRender::queueCallback(SLAndroidSimpleBufferQueueItf bufferQueue, vo
     LOGE("audio", "队列回调");
     fm_AudioRender *render = (fm_AudioRender *) context;
 
+    // 判断时间戳
+
     BlockQueue *queue = render->blockQueue;
     fm_AudioFrame *frame = (fm_AudioFrame *) queue->poll();
     LOGE("audio", "取出缓存队列");
@@ -120,7 +122,8 @@ void fm_AudioRender::queueCallback(SLAndroidSimpleBufferQueueItf bufferQueue, vo
     }
 }
 
-void fm_AudioRender::pullFrame(uint8_t *frameData, int size) {
+void fm_AudioRender::pullFrame(uint8_t *frameData, int size, double timestamp) {
+
     // 前几帧直接塞入，后几帧塞入队列
     if (queueSize > 0) {
         SLresult queueResult = (*bufferQueue)->Enqueue(bufferQueue, frameData, size);
@@ -132,6 +135,7 @@ void fm_AudioRender::pullFrame(uint8_t *frameData, int size) {
         fm_AudioFrame *frame = new fm_AudioFrame();
         frame->frameData = frameData;
         frame->size = size;
+        frame->timestamp = timestamp;
         blockQueue->pull(frame);
         LOGE("audio", "插入队列成功(直接)");
     }

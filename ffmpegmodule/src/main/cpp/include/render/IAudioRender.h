@@ -16,6 +16,7 @@
 typedef struct {
     uint8_t *frameData;
     int size;
+    double timestamp;
 } fm_AudioFrame;
 
 class fm_AudioRender {
@@ -25,7 +26,7 @@ public:
     void initRender();
 
     //存在阻塞
-    void pullFrame(uint8_t *frameData, int size);
+    void pullFrame(uint8_t *frameData, int size, double timestamp);
 
     void releaseRender();
 

@@ -128,7 +128,9 @@ void *fm_AudioDecode::decodeTask(void *decode) {
                 LOGE("decode", "塞入解码器 %d", ret);
 
                 while (avcodec_receive_frame(avCodecContext, frameDecode) == 0) {
-                    LOGE("decode", "从解码器中，取出一帧的音频数据 样本数 %d", frameDecode->nb_samples);
+                    double timestamp = packet.pts * av_q2d(formatContext->streams[audioStream]->time_base);
+
+                    LOGE("decode", "从解码器中，取出一帧的音频数据 样本数 %d 时间戳%f", frameDecode->nb_samples, timestamp);
                     int result = swr_convert(swrContext, &outSwrAudioOutBuffer, outSwrFrameDataSize / outSwrChannel,
                                              (const uint8_t **) frameDecode->data, frameDecode->nb_samples);
                     if (result > 0) {
@@ -138,7 +140,7 @@ void *fm_AudioDecode::decodeTask(void *decode) {
                         uint8_t *frameData = (uint8_t *) malloc(outSwrFrameDataSize);
                         memcpy(frameData, outSwrAudioOutBuffer, sizeof(uint8_t) * outSwrFrameDataSize);
 
-                        decoder->render->pullFrame(frameData, outSwrFrameDataSize);
+                        decoder->render->pullFrame(frameData, outSwrFrameDataSize, timestamp);
                     }
                 }
             }
