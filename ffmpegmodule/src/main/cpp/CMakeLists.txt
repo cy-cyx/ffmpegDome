@@ -74,6 +74,7 @@ add_library(
         render/VideoRender.cpp
         decode/AudioDecode.cpp
         decode/VideoDecode.cpp
+        sync/SyncController.cpp
 )
 
 

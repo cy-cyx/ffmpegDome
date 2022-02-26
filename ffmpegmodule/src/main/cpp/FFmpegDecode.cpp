@@ -21,6 +21,9 @@ void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
     fmVideoDecode->initDecode();
     fmVideoDecode->videoRender = fmVideoRender;
     fmVideoDecode->execute(file_name);
+
+//    time_t now = time(NULL);
+//    LOGE("time", "%ld", now);
 }
 
 void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {

@@ -7,6 +7,7 @@
 #include "decode/IAudioDecode.h"
 #include "render/IAudioRender.h"
 #include "render/IVideoRender.h"
+#include "sync/ISyncController.h"
 
 #ifndef FFMPEGDOME_IFFMPEGDECODE_H
 #define FFMPEGDOME_IFFMPEGDECODE_H
