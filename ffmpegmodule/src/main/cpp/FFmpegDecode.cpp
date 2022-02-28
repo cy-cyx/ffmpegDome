@@ -12,7 +12,10 @@ void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
         LOGE("decode", "ANativeWindow 获取错误");
     }
 
+    fm_SyncController *syncController = new fm_SyncController();
+
     fm_VideoRender *fmVideoRender = new fm_VideoRender();
+    fmVideoRender->syncController = syncController;
     fmVideoRender->initRender();
     fmVideoRender->nativeWindow = nativeWindow;
     fmVideoRender->execute();
@@ -22,8 +25,7 @@ void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
     fmVideoDecode->videoRender = fmVideoRender;
     fmVideoDecode->execute(file_name);
 
-//    time_t now = time(NULL);
-//    LOGE("time", "%ld", now);
+    syncController->startPlay();
 }
 
 void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {

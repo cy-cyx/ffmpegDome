@@ -125,7 +125,6 @@ void *fm_VideoDecode::decodeTask(void *decode) {
         LOGI("decode", "初始化格式转换成功");
 
         LOGE("decode", "开始解码");
-
         uint8_t *buffer = (uint8_t *) av_malloc(numBytes * sizeof(uint8_t));
 
         int ret;
@@ -136,7 +135,7 @@ void *fm_VideoDecode::decodeTask(void *decode) {
             if (packet.stream_index == videoStream) {
                 //该楨位置
                 double timestamp = packet.pts * av_q2d(formatContext->streams[videoStream]->time_base);
-                LOGI("decode", "timestamp=%f", timestamp);
+                LOGI("decode", "塞入解码队列帧的时间戳:%f", timestamp);
                 // 解码
                 ret = avcodec_send_packet(avCodecContext, &packet);
                 if (ret < 0) {
@@ -161,9 +160,11 @@ void *fm_VideoDecode::decodeTask(void *decode) {
                               frameDecode->linesize, 0, avCodecContext->height,
                               frameRGBA->data, frameRGBA->linesize);
 
-                    LOGE("decode", "塞入绘制队列");
+                    long frameTp =
+                            (long) (frameDecode->pts * av_q2d(formatContext->streams[videoStream]->time_base) * 1000);
+                    LOGE("decode", "塞入绘制队列的时间戳:%ld", frameTp);
 
-                    decoder->videoRender->pullFrame(frameRGBA, timestamp, avCodecContext->width,
+                    decoder->videoRender->pullFrame(frameRGBA, frameTp, avCodecContext->width,
                                                     avCodecContext->height);
                 }
             }

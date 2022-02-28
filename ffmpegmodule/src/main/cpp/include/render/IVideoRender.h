@@ -3,7 +3,9 @@
 //
 #include <pthread.h>
 #include "ILog.h"
-#include <IBlockQueue.h>
+#include "IBlockQueue.h"
+#include "sync/ISync.h"
+#include <unistd.h>
 
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
@@ -17,7 +19,7 @@ extern "C" {
 
 typedef struct {
     AVFrame *avFrame;
-    double timestamp;
+    long timestamp;
     int width;
     int height;
 } fm_VideoFrame;
@@ -26,12 +28,14 @@ class fm_VideoRender {
 public:
     ANativeWindow *nativeWindow;
 
+    fm_ISyncController *syncController;
+
     void initRender();
 
     void execute();
 
     //存在阻塞
-    void pullFrame(AVFrame *avFrame, double timestamp, int width, int height);
+    void pullFrame(AVFrame *avFrame, long timestamp, int width, int height);
 
     void releaseRender();
 

@@ -2,30 +2,25 @@
 // Created by 蔡翼翔 on 2022/2/20.
 //
 
+#include "sync/ISync.h"
 #include "render/IAudioRender.h"
 #include "render/IVideoRender.h"
-#include "time.h"
+#include "ILog.h"
 
 #ifndef FFMPEGDOME_ISYNCCONTROLLER_H
 #define FFMPEGDOME_ISYNCCONTROLLER_H
 
-class fm_ISyncController {
-public:
-    virtual double videoTimeStampDiff() = 0;
+class fm_SyncController : public fm_ISyncController {
 
-    virtual double audioTimeStampDiff() = 0;
+public:
+    long audioTimeStampDiff();
+
+    long videoTimeStampDiff();
+
+    void startPlay();
 
 private:
-    fm_AudioRender audioRender;
-    fm_VideoRender videoRender;
-};
-
-class fm_SyncController : fm_ISyncController {
-
-public:
-    double audioTimeStampDiff();
-
-    double videoTimeStampDiff();
+    long startTp = 0;
 };
 
 #endif //FFMPEGDOME_ISYNCCONTROLLER_H
