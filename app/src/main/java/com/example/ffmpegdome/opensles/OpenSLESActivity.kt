@@ -10,6 +10,9 @@ import kotlinx.android.synthetic.main.activity_opensles.*
  * Time:2022/1/13 16:39
  * Author:cyx
  * Description:openSLES播放音频
+ *
+ * 测试的外链地址
+ * https://music.xf1433.com/?name=%E5%8F%B9&type=kugou
  */
 class OpenSLESActivity : AppCompatActivity() {
 

@@ -8,7 +8,7 @@
         android:id="@+id/et_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="http://downsc.chinaz.net/Files/DownLoad/sound1/201906/11582.mp3" />
+        android:text="https://sharefs.ali.kugou.com/202203081733/9cf167009399c608bd8d1217ae512211/KGTX/CLTX001/b5b0c0212b3ee27269e322f88f9c07d8.mp3" />
 
     <Button
         android:id="@+id/bn_init"
