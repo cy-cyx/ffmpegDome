@@ -75,6 +75,7 @@ add_library(
         decode/AudioDecode.cpp
         decode/VideoDecode.cpp
         sync/SyncController.cpp
+        C2JPostEvent.cpp
 )
 
 

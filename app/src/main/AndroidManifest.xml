@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".configuration.ConfigurationActivity" />
-        <activity android:name=".player.PlayerActivity" />
+        <activity android:name=".onlyVideo.OnlyVideoActivity" />
         <activity
             android:name=".opensles.OpenSLESActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".playvideoofaudio.PlayVideoOfAudioActivity" />
+        <activity android:name=".onlyAudio.OnlyAudioActivity" />
     </application>
 
 </manifest>

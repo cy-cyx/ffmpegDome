@@ -1,5 +1,6 @@
 package com.example.ffmpegmodule;
 
+import android.util.Log;
 import android.view.Surface;
 
 /**
@@ -19,7 +20,7 @@ public class FFmpegNative {
 
     public native static String getAvCodecConfigurationNative();
 
-    public native static void playNative(String url, Surface surface);
+    public native static void playNative(IPlayer player, String url, Surface surface);
 
     public native static long createUrlAudioPlayer();
 
@@ -32,4 +33,11 @@ public class FFmpegNative {
     public native static int urlAudioPlayerGetState(long ptr);
 
     public native static void playVideoOfAudioNative(String url);
+
+    // 底层通知java层的接口
+    private static void postEventFromNative(Object player, int what, int arg1, int arg2, Object obj) {
+        if (player != null) {
+            ((IPlayer) player).postEvent(what, arg1, arg2, obj);
+        }
+    }
 }

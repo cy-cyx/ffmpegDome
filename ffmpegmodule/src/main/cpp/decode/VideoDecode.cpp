@@ -16,6 +16,12 @@ void *fm_VideoDecode::decodeTask(void *decode) {
 
     fm_VideoDecode *decoder = (fm_VideoDecode *) decode;
 
+    JNIEnv *jniEnv;
+
+    if (javaVm != NULL) {
+        javaVm->AttachCurrentThread(&jniEnv, NULL);
+    }
+
     do {
         LOGI("decode", "开始解码视频 %s", decoder->url);
 
@@ -90,6 +96,8 @@ void *fm_VideoDecode::decodeTask(void *decode) {
         // 设置一下帧
         decoder->videoRender->setBuffersGeometry(avCodecContext->width, avCodecContext->height,
                                                  WINDOW_FORMAT_RGBA_8888);
+        // 通知一下java
+        postEventToJava(jniEnv, decoder->player, EVENT_VIDEO_SIZE, avCodecContext->width, avCodecContext->height, NULL);
 
         LOGI("decode", "视频流帧率：%d fps\n", formatContext->streams[videoStream]->r_frame_rate.num /
                                          formatContext->streams[videoStream]->r_frame_rate.den);
@@ -176,6 +184,10 @@ void *fm_VideoDecode::decodeTask(void *decode) {
     } while (false);
 
     decoder->releaseDecode();
+
+    if (javaVm != NULL) {
+        javaVm->DetachCurrentThread();
+    }
 
     pthread_exit(NULL);
 }

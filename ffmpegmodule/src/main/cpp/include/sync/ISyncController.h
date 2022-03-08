@@ -10,7 +10,10 @@
 #ifndef FFMPEGDOME_ISYNCCONTROLLER_H
 #define FFMPEGDOME_ISYNCCONTROLLER_H
 
-class fm_SyncController : public fm_ISyncController {
+/**
+ * 按照系统时钟同步
+ */
+class fm_SyncController1 : public fm_ISyncController {
 
 public:
     long audioTimeStampDiff();
@@ -21,6 +24,17 @@ public:
 
 private:
     long startTp = 0;
+};
+
+class fm_SyncController2 : public fm_ISyncController {
+public:
+    long audioTimeStampDiff();
+
+    long videoTimeStampDiff();
+
+private:
+    fm_AudioRender audioRender;
+    fm_VideoRender videoRender;
 };
 
 #endif //FFMPEGDOME_ISYNCCONTROLLER_H

@@ -10,8 +10,8 @@
  *
  * 所有面对java层的接口都定义在这里
 */
-void _playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
-    return playVideoTest(env, clazz, uri, surface);
+void _playVideoTest(JNIEnv *env, jclass clazz, jobject player, jstring uri, jobject surface) {
+    return playVideoTest(env, player, uri, surface);
 }
 
 jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
@@ -48,14 +48,14 @@ void _playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
 int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
-            {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                        (void *) _getAvCodecConfiguration},
-            {"playNative",                    "(Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoTest},
-            {"createUrlAudioPlayer",          "()J",                                         (void *) _createUrlAudioPlayer},
-            {"destroyUrlAudioPlayer",         "(J)V",                                        (void *) _destroyUrlAudioPlayer},
-            {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                      (void *) _initUrlAudioPlayer},
-            {"urlAudioPlayerPlay",            "(J)V",                                        (void *) _urlAudioPlayerPlay},
-            {"urlAudioPlayerGetState",        "(J)I",                                        (void *) _urlAudioPlayerGetState},
-            {"playVideoOfAudioNative",        "(Ljava/lang/String;)V",                       (void *) _playVideoOfAudio}
+            {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                                                          (void *) _getAvCodecConfiguration},
+            {"playNative",                    "(Lcom/example/ffmpegmodule/IPlayer;Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoTest},
+            {"createUrlAudioPlayer",          "()J",                                                                           (void *) _createUrlAudioPlayer},
+            {"destroyUrlAudioPlayer",         "(J)V",                                                                          (void *) _destroyUrlAudioPlayer},
+            {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                                                        (void *) _initUrlAudioPlayer},
+            {"urlAudioPlayerPlay",            "(J)V",                                                                          (void *) _urlAudioPlayerPlay},
+            {"urlAudioPlayerGetState",        "(J)I",                                                                          (void *) _urlAudioPlayerGetState},
+            {"playVideoOfAudioNative",        "(Ljava/lang/String;)V",                                                         (void *) _playVideoOfAudio}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 
@@ -64,6 +64,12 @@ int registerNativeMethods(JNIEnv *env) {
     if (clazz == NULL) {
         return JNI_FALSE;
     }
+
+    // FindClass是局部引用需要转成全局引用
+    LOGI("postEvent", "获得局部clazz，转成全局");
+    env->GetJavaVM(&javaVm);
+    eventReceiver = static_cast<jclass>((jobject) env->NewGlobalRef(clazz));
+
     if (env->RegisterNatives(clazz, methods, sizeof(methods) / sizeof(methods[0])) < 0) {
         return JNI_FALSE;
     }

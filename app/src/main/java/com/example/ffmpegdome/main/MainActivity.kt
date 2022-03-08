@@ -13,6 +13,7 @@ import com.chat.albumlib.AlbumActivity
 import com.chat.albumlib.AlbumControl
 import com.example.ffmpegdome.R
 import com.example.ffmpegdome.utils.PermissionUtil
+import com.example.ffmpegdome.utils.ScreenUtils
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        ScreenUtils.init(this)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         mainAdapter = MainAdapter().apply {

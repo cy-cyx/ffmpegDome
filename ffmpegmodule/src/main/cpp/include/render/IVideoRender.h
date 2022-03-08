@@ -6,6 +6,7 @@
 #include "IBlockQueue.h"
 #include "sync/ISync.h"
 #include <unistd.h>
+#include "C2JPostEvent.h"
 
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
@@ -26,6 +27,8 @@ typedef struct {
 
 class fm_VideoRender {
 public:
+    jobject player;
+
     ANativeWindow *nativeWindow;
 
     fm_ISyncController *syncController;

@@ -1,4 +1,4 @@
-package com.example.ffmpegdome.playvideoofaudio
+package com.example.ffmpegdome.onlyAudio
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,26 +16,26 @@ import java.util.ArrayList
  * Author:
  * Description:
  */
-class PlayVideoOfAudioActivity : AppCompatActivity() {
+class OnlyAudioActivity : AppCompatActivity() {
 
-    private var viewModel: PlayVideoOfAudioViewModel? = null
+    private var mViewModel: OnlyAudioViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_of_audio)
-        viewModel = ViewModelProvider(this).get(PlayVideoOfAudioViewModel::class.java)
+        setContentView(R.layout.activity_only_audio)
+        mViewModel = ViewModelProvider(this).get(OnlyAudioViewModel::class.java)
 
-        viewModel?.videoUrl?.observe(this, {
+        mViewModel?.videoUrl?.observe(this, {
             tv_url.text = it
         })
 
         bn_album.setOnClickListener {
-            viewModel?.openAlbum(this)
+            mViewModel?.openAlbum(this)
         }
 
         bn_play_audio.setOnClickListener {
-            viewModel?.videoUrl?.value?.let {
-                viewModel?.openVideoOfAudio(it)
+            mViewModel?.videoUrl?.value?.let {
+                mViewModel?.openVideoOfAudio(it)
             } ?: kotlin.run {
                 Toast.makeText(this, "先选择视频", Toast.LENGTH_SHORT).show()
             }
@@ -47,7 +47,7 @@ class PlayVideoOfAudioActivity : AppCompatActivity() {
         if (requestCode == 1000) {
             val list = data?.getSerializableExtra(AlbumActivity.KEY_SELECT_DATA) as? ArrayList<Image> ?: ArrayList()
             list.getOrNull(0)?.let {
-                viewModel?.videoUrl?.value = it.path
+                mViewModel?.videoUrl?.value = it.path
             }
         }
     }

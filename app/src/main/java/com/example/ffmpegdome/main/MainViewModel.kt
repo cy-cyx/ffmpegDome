@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.ffmpegdome.configuration.ConfigurationActivity
 import com.example.ffmpegdome.opensles.OpenSLESActivity
-import com.example.ffmpegdome.player.PlayerActivity
-import com.example.ffmpegdome.playvideoofaudio.PlayVideoOfAudioActivity
+import com.example.ffmpegdome.onlyVideo.OnlyVideoActivity
+import com.example.ffmpegdome.onlyAudio.OnlyAudioActivity
 
 /**
  * Time:2022/1/7 16:25
@@ -21,9 +21,9 @@ class MainViewModel : ViewModel() {
     init {
         data.value = ArrayList<ItemData>().apply {
             add(ItemData("so编译参数", ConfigurationActivity::class.java))
-            add(ItemData("软解播放", PlayerActivity::class.java))
-            add(ItemData("使用OpenSLES播放url", OpenSLESActivity::class.java))
-            add(ItemData("播放视频中的音频", PlayVideoOfAudioActivity::class.java))
+            add(ItemData("仅播放MP4中的视频", OnlyVideoActivity::class.java))
+            add(ItemData("使用OpenSLES播放url(url可能失效)", OpenSLESActivity::class.java))
+            add(ItemData("仅播放MP4中的音频", OnlyAudioActivity::class.java))
         }
     }
 

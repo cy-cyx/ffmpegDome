@@ -3,7 +3,7 @@
 //
 #include "IFFmpegDecode.h"
 
-void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
+void playVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface) {
 
     const char *file_name = env->GetStringUTFChars(uri, NULL);
 
@@ -12,17 +12,22 @@ void playVideoTest(JNIEnv *env, jclass clazz, jstring uri, jobject surface) {
         LOGE("decode", "ANativeWindow 获取错误");
     }
 
-    fm_SyncController *syncController = new fm_SyncController();
+    fm_SyncController1 *syncController = new fm_SyncController1();
+
+    JavaVM *javaVm;
+    env->GetJavaVM(&javaVm);
 
     fm_VideoRender *fmVideoRender = new fm_VideoRender();
-    fmVideoRender->syncController = syncController;
     fmVideoRender->initRender();
+    fmVideoRender->syncController = syncController;
     fmVideoRender->nativeWindow = nativeWindow;
+    fmVideoRender->player = env->NewGlobalRef(player);
     fmVideoRender->execute();
 
     fm_VideoDecode *fmVideoDecode = new fm_VideoDecode();
     fmVideoDecode->initDecode();
     fmVideoDecode->videoRender = fmVideoRender;
+    fmVideoDecode->player = env->NewGlobalRef(player);
     fmVideoDecode->execute(file_name);
 
     syncController->startPlay();

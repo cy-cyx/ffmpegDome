@@ -4,6 +4,7 @@
 
 #include <pthread.h>
 #include "ILog.h"
+#include "jni.h"
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -21,7 +22,9 @@ extern "C" {
 
 class fm_VideoDecode {
 public:
-    fm_VideoRender* videoRender;
+    jobject player;
+
+    fm_VideoRender *videoRender;
 
     void initDecode();
 
