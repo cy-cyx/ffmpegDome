@@ -10,29 +10,32 @@
 #ifndef FFMPEGDOME_IAUDIOPLAYER_H
 #define FFMPEGDOME_IAUDIOPLAYER_H
 
-typedef struct {
+class fm_UrlAudioPlayer {
+
+public:
     SLObjectItf engineObject;
     SLEngineItf engineEngine;
     SLObjectItf outputMixObject;
     SLEnvironmentalReverbItf outputMixEnvironmentalReverb;
-
-    // uri
     SLObjectItf uriPlayerObject;
     SLPlayItf uriPlayerPlay;
-} fm_UrlAudioPlayerInfo;
 
-// 输出混合的辅助效果，由缓冲队列播放器使用
-static const SLEnvironmentalReverbSettings reverbSettings =
-        SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
+    long create();
 
-long fm_createUrlAudioPlayer();
+    void destroy();
 
-void fm_destroyUrlAudioPlayer(long playPtr);
+    void init(JNIEnv *env, jstring url);
 
-void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url);
+    void play();
 
-void fm_urlAudioPlayerPlay(long playPtr);
+    unsigned int getState();
 
-unsigned int fm_urlAudioPlayerGetState(long playPtr);
+    static void urlPlayCallback(SLPlayItf caller, void *pContext, SLuint32 event);
+
+private:
+    // 输出混合的辅助效果，由缓冲队列播放器使用
+    const SLEnvironmentalReverbSettings reverbSettings = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
+};
+
 
 #endif //FFMPEGDOME_IAUDIOPLAYER_H

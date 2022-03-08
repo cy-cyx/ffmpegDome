@@ -10,8 +10,8 @@
  *
  * 所有面对java层的接口都定义在这里
 */
-void _playVideoTest(JNIEnv *env, jclass clazz, jobject player, jstring uri, jobject surface) {
-    return playVideoTest(env, player, uri, surface);
+void _playOnlyVideoTest(JNIEnv *env, jclass clazz, jobject player, jstring uri, jobject surface) {
+    return playOnlyVideoTest(env, player, uri, surface);
 }
 
 jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
@@ -19,27 +19,29 @@ jstring _getAvCodecConfiguration(JNIEnv *env, jclass clazz) {
 }
 
 long _createUrlAudioPlayer(JNIEnv *env, jclass clazz) {
-    return fm_createUrlAudioPlayer();
-}
-
-void _destroyUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
-    fm_destroyUrlAudioPlayer(playPtr);
+    fm_UrlAudioPlayer *player = new fm_UrlAudioPlayer();
+    return player->create();
 }
 
 void _initUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr, jstring url) {
-    fm_initUrlAudioPlayer(env, playPtr, url);
+    ((fm_UrlAudioPlayer *) playPtr)->init(env, url);
+}
+
+void _destroyUrlAudioPlayer(JNIEnv *env, jclass clazz, long playPtr) {
+    ((fm_UrlAudioPlayer *) playPtr)->destroy();
+    free((fm_UrlAudioPlayer *) playPtr);
 }
 
 void _urlAudioPlayerPlay(JNIEnv *env, jclass clazz, long playPtr) {
-    fm_urlAudioPlayerPlay(playPtr);
+    ((fm_UrlAudioPlayer *) playPtr)->play();
 }
 
 int _urlAudioPlayerGetState(JNIEnv *env, jclass clazz, long playPtr) {
-    return (int) fm_urlAudioPlayerGetState(playPtr);
+    return ((fm_UrlAudioPlayer *) playPtr)->getState();
 }
 
-void _playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
-    playVideoOfAudio(env, clazz, uri);
+void _playOnlyAudioTest(JNIEnv *env, jclass clazz, jstring uri) {
+    playOnlyAudioTest(env, clazz, uri);
 }
 
 /**
@@ -49,13 +51,13 @@ int registerNativeMethods(JNIEnv *env) {
 
     JNINativeMethod methods[] = {
             {"getAvCodecConfigurationNative", "()Ljava/lang/String;",                                                          (void *) _getAvCodecConfiguration},
-            {"playNative",                    "(Lcom/example/ffmpegmodule/IPlayer;Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playVideoTest},
+            {"playOnlyVideoNative",           "(Lcom/example/ffmpegmodule/IPlayer;Ljava/lang/String;Landroid/view/Surface;)V", (void *) _playOnlyVideoTest},
             {"createUrlAudioPlayer",          "()J",                                                                           (void *) _createUrlAudioPlayer},
             {"destroyUrlAudioPlayer",         "(J)V",                                                                          (void *) _destroyUrlAudioPlayer},
             {"initUrlAudioPlayer",            "(JLjava/lang/String;)V",                                                        (void *) _initUrlAudioPlayer},
             {"urlAudioPlayerPlay",            "(J)V",                                                                          (void *) _urlAudioPlayerPlay},
             {"urlAudioPlayerGetState",        "(J)I",                                                                          (void *) _urlAudioPlayerGetState},
-            {"playVideoOfAudioNative",        "(Ljava/lang/String;)V",                                                         (void *) _playVideoOfAudio}
+            {"playOnlyAudioNative",           "(Ljava/lang/String;)V",                                                         (void *) _playOnlyAudioTest}
     };
     const char *className = "com/example/ffmpegmodule/FFmpegNative";
 

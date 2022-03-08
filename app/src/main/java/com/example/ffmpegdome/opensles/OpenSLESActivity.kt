@@ -13,25 +13,25 @@ import kotlinx.android.synthetic.main.activity_opensles.*
  */
 class OpenSLESActivity : AppCompatActivity() {
 
-    private var audioPlayer: AudioPlayer? = null
+    private var mUrlAudioPlayer: UrlAudioPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_opensles)
-        audioPlayer = AudioPlayer()
+        mUrlAudioPlayer = UrlAudioPlayer()
 
         bn_init.setOnClickListener {
             et_url.text.toString().let {
-                audioPlayer?.init(it)
+                mUrlAudioPlayer?.init(it)
             }
         }
 
         bn_play.setOnClickListener {
-            audioPlayer?.play()
+            mUrlAudioPlayer?.play()
         }
 
         bn_state.setOnClickListener {
-            val state = audioPlayer?.getState()
+            val state = mUrlAudioPlayer?.getState()
             state?.let {
                 when (it) {
                     FFmpegNative.PLAYSTATE_STOPPED -> tv_state.text = "初始化"
@@ -44,7 +44,7 @@ class OpenSLESActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        audioPlayer?.release()
-        audioPlayer = null
+        mUrlAudioPlayer?.release()
+        mUrlAudioPlayer = null
     }
 }

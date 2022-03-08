@@ -20,7 +20,7 @@ class OnlyVideoPlayer : IPlayer {
     var videoSizeChangeListen: onVideoSizeChangeListen? = null
 
     fun play(url: String, surface: Surface) {
-        FFmpegNative.playNative(this, url, surface)
+        FFmpegNative.playOnlyVideoNative(this, url, surface)
     }
 
     override fun postEvent(what: Int, arg1: Int, arg2: Int, obj: Any?) {

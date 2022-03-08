@@ -5,9 +5,9 @@ import com.example.ffmpegmodule.FFmpegNative
 /**
  * Time:2022/1/13 16:46
  * Author:cyx
- * Description:语音播放器
+ * Description:通过opensles播放url
  */
-class AudioPlayer {
+class UrlAudioPlayer {
 
     var audioNativePtr: Long = -1
 

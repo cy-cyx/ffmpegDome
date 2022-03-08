@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.chat.albumlib.AlbumActivity
 import com.chat.albumlib.Image
 import com.example.ffmpegdome.R
-import kotlinx.android.synthetic.main.activity_video_of_audio.*
+import kotlinx.android.synthetic.main.activity_only_audio.*
 import java.util.ArrayList
 
 /**

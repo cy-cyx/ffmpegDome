@@ -3,7 +3,7 @@
 //
 #include "IFFmpegDecode.h"
 
-void playVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface) {
+void playOnlyVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface) {
 
     const char *file_name = env->GetStringUTFChars(uri, NULL);
 
@@ -33,7 +33,7 @@ void playVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface) {
     syncController->startPlay();
 }
 
-void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri) {
+void playOnlyAudioTest(JNIEnv *env, jclass clazz, jstring uri) {
 
     const char *file_name = env->GetStringUTFChars(uri, NULL);
     LOGI("decode", "播放视频中的音频 %s", file_name);

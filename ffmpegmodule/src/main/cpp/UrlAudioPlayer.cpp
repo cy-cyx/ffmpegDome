@@ -5,17 +5,11 @@
 #include "IUrlAudioPlayer.h"
 
 // 播放url无回调
-void urlPlayCallback(SLPlayItf caller, void *pContext, SLuint32 event) {
+void fm_UrlAudioPlayer::urlPlayCallback(SLPlayItf caller, void *pContext, SLuint32 event) {
     LOGI("audio", "播放回调 %d", event);
 }
 
-long fm_createUrlAudioPlayer() {
-    fm_UrlAudioPlayerInfo *playInfo = new fm_UrlAudioPlayerInfo();
-    SLObjectItf engineObject;
-    SLEngineItf engineEngine;
-    SLObjectItf outputMixObject;
-    SLEnvironmentalReverbItf outputMixEnvironmentalReverb;
-
+long fm_UrlAudioPlayer::create() {
     SLresult result;
     // 创建引擎
     result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
@@ -27,15 +21,12 @@ long fm_createUrlAudioPlayer() {
     if (SL_RESULT_SUCCESS != result) {
         LOGE("audio", "初始化引擎失败");
     }
-    playInfo->engineObject = engineObject;
 
     // 获取引擎接口，这是创建其他对象所必需的
     result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
     if (SL_RESULT_SUCCESS != result) {
         LOGE("audio", "创建引擎接口失败");
     }
-
-    playInfo->engineEngine = engineEngine;
 
     // 创建输出混音，环境混响指定为非必需接口
     const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
@@ -51,8 +42,6 @@ long fm_createUrlAudioPlayer() {
         LOGE("audio", "初始化混音失败");
     }
 
-    playInfo->outputMixObject = outputMixObject;
-
     // 设置环境混响
     result = (*outputMixObject)->GetInterface(outputMixObject, SL_IID_ENVIRONMENTALREVERB,
                                               &outputMixEnvironmentalReverb);
@@ -66,43 +55,36 @@ long fm_createUrlAudioPlayer() {
         LOGE("audio", "获得环境混音失败");
     }
 
-    playInfo->outputMixEnvironmentalReverb = outputMixEnvironmentalReverb;
-
     LOGI("audio", "初始化AudioPlayer成功");
 
-    return (long) playInfo;
+    return (long) this;
 }
 
-void fm_destroyUrlAudioPlayer(long playPtr) {
-    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
+void fm_UrlAudioPlayer::destroy() {
 
-    if (NULL == playInfo->engineObject)return;
+    if (NULL == engineObject)return;
 
-    if (NULL != playInfo->outputMixObject) {
-        (*(playInfo->engineObject))->Destroy(playInfo->outputMixObject);
-        playInfo->outputMixObject = NULL;
+    if (NULL != outputMixObject) {
+        (*engineObject)->Destroy(outputMixObject);
+        outputMixObject = NULL;
     }
 
-    if (NULL != playInfo->uriPlayerObject) {
-        (*(playInfo->uriPlayerObject))->Destroy(playInfo->uriPlayerObject);
-        playInfo->uriPlayerObject = NULL;
+    if (NULL != uriPlayerObject) {
+        (*uriPlayerObject)->Destroy(uriPlayerObject);
+        uriPlayerObject = NULL;
     }
 
 
-    if (NULL != playInfo->engineObject) {
-        (*(playInfo->engineObject))->Destroy(playInfo->engineObject);
-        playInfo->engineEngine = NULL;
+    if (NULL != engineObject) {
+        (*engineObject)->Destroy(engineObject);
+        engineEngine = NULL;
     }
-
-    free(playInfo);
 
     LOGI("audio", "销毁AudioPlayer完毕");
 
 }
 
-void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
-    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
-    SLEngineItf engineEngine = playInfo->engineEngine;
+void fm_UrlAudioPlayer::init(JNIEnv *env, jstring url) {
 
     SLresult result;
 
@@ -116,18 +98,16 @@ void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
     SLDataSource audioSrc = {&loc_uri, &format_mime};
 
     // 配置音频接收器
-    SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, playInfo->outputMixObject};
+    SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
     SLDataSink audioSnk = {&loc_outmix, NULL};
 
     // 创建音频播放器
-    SLObjectItf uriPlayerObject;
     const SLInterfaceID ids[3] = {SL_IID_SEEK, SL_IID_MUTESOLO, SL_IID_VOLUME};
     const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE};
     result = (*engineEngine)->CreateAudioPlayer(engineEngine, &uriPlayerObject, &audioSrc, &audioSnk, 3, ids, req);
     if (SL_RESULT_SUCCESS != result) {
         LOGE("audio", "创建播放器失败");
     }
-    playInfo->uriPlayerObject = uriPlayerObject;
 
     // 初始化
     result = (*uriPlayerObject)->Realize(uriPlayerObject, SL_BOOLEAN_FALSE);
@@ -135,12 +115,10 @@ void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
         LOGE("audio", "初始化播放器失败");
     }
 
-    SLPlayItf uriPlayerPlay;
     result = (*uriPlayerObject)->GetInterface(uriPlayerObject, SL_IID_PLAY, &uriPlayerPlay);
     if (SL_RESULT_SUCCESS != result) {
         LOGE("audio", "创建播放器控制失败");
     }
-    playInfo->uriPlayerPlay = uriPlayerPlay;
 
     (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADATEND);
     (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADATMARKER);
@@ -148,7 +126,7 @@ void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
     (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADMOVING);
     (*uriPlayerPlay)->SetCallbackEventsMask(uriPlayerPlay, SL_PLAYEVENT_HEADSTALLED);
 
-    result = (*uriPlayerPlay)->RegisterCallback(uriPlayerPlay, urlPlayCallback, playInfo);
+    result = (*uriPlayerPlay)->RegisterCallback(uriPlayerPlay, fm_UrlAudioPlayer::urlPlayCallback, this);
     if (SL_RESULT_SUCCESS != result) {
         LOGE("audio", "RegisterCallback失败");
     }
@@ -156,9 +134,7 @@ void fm_initUrlAudioPlayer(JNIEnv *env, long playPtr, jstring url) {
     LOGI("audio", "初始化uri播放器成功");
 }
 
-void fm_urlAudioPlayerPlay(long playPtr) {
-    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
-    SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
+void fm_UrlAudioPlayer::play() {
     SLresult result;
 
     result = (*uriPlayerPlay)->SetPlayState(uriPlayerPlay, SL_PLAYSTATE_PLAYING);
@@ -169,9 +145,7 @@ void fm_urlAudioPlayerPlay(long playPtr) {
     LOGE("audio", "播放成功");
 }
 
-unsigned int fm_urlAudioPlayerGetState(long playPtr) {
-    fm_UrlAudioPlayerInfo *playInfo = (fm_UrlAudioPlayerInfo *) playPtr;
-    SLPlayItf uriPlayerPlay = playInfo->uriPlayerPlay;
+unsigned int fm_UrlAudioPlayer::getState() {
     SLresult result;
 
     SLuint32 state;

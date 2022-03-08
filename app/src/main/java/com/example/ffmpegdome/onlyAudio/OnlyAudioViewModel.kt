@@ -21,6 +21,6 @@ class OnlyAudioViewModel : ViewModel() {
     }
 
     fun openVideoOfAudio(url: String) {
-        FFmpegNative.playVideoOfAudioNative(url)
+        FFmpegNative.playOnlyAudioNative(url)
     }
 }

@@ -14,7 +14,7 @@ import com.chat.albumlib.AlbumActivity
 import com.chat.albumlib.Image
 import com.example.ffmpegdome.R
 import com.example.ffmpegdome.utils.ScreenUtils
-import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.activity_only_video.*
 import java.util.ArrayList
 
 /**

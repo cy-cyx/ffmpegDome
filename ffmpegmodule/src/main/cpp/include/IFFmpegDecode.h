@@ -12,8 +12,8 @@
 #ifndef FFMPEGDOME_IFFMPEGDECODE_H
 #define FFMPEGDOME_IFFMPEGDECODE_H
 
-void playVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface);
+void playOnlyVideoTest(JNIEnv *env, jobject player, jstring uri, jobject surface);
 
-void playVideoOfAudio(JNIEnv *env, jclass clazz, jstring uri);
+void playOnlyAudioTest(JNIEnv *env, jclass clazz, jstring uri);
 
 #endif //FFMPEGDOME_IFFMPEGDECODE_H
