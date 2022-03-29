@@ -146,6 +146,8 @@ void *fm_AudioDecode::decodeTask(void *decode) {
             }
             // 清掉这一个帧的数据了
             av_packet_unref(&packet);
+
+
         }
 
         LOGE("decode", "解码结束");
